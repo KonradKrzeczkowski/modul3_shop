@@ -1,0 +1,66 @@
+"use client";
+
+import { useRef, useState, useEffect } from "react";
+import CategoryCard from "@/components/CategoryCard";
+import { Brand } from "@/lib/types"; 
+
+type Props = {
+  brands: Brand[];
+};
+
+export default function BrandListClient({ brands }: Props) {
+  const listRef = useRef<HTMLDivElement>(null);
+  const [showSeeMore, setShowSeeMore] = useState(true);
+
+  const handleSeeMore = () => {
+    if (listRef.current) {
+    
+      const gap = 24; 
+      const scrollAmount = 220 + gap;
+      listRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  };
+
+  const checkScroll = () => {
+    if (!listRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = listRef.current;
+    setShowSeeMore(scrollLeft + clientWidth < scrollWidth - 1);
+  };
+
+  useEffect(() => {
+    checkScroll();
+    window.addEventListener("resize", checkScroll);
+    return () => window.removeEventListener("resize", checkScroll);
+  }, []);
+
+  return (
+    <div className="pt-[80px]  pb-[100px]">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-[28px] font-semibold">Brands</h2>
+        {showSeeMore && (
+          <button
+            onClick={handleSeeMore}
+            className="text-blue-500 hover:underline"
+          >
+            See more
+          </button>
+        )}
+      </div>
+
+      <div
+        ref={listRef}
+        className="flex gap-6 overflow-x-auto pb-4 scroll-smooth hide-scrollbar"
+        onScroll={checkScroll}
+      >
+        {brands.map((brand) => (
+          <div key={brand.id} className="flex-shrink-0">
+            <CategoryCard
+              imageSrc={brand.logo ?? "/placeholder.png"}
+              name={brand.name}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
