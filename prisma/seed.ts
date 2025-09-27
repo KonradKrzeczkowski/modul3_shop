@@ -85,11 +85,13 @@ async function main() {
       name: "Rexus",
       logo: "https://i.ibb.co/gZ0PwjsF/Rexus-Logo.png",
     },
-  });
 
+    
+  });
+console.log("seede")
   // --- Produkty ---
-await prisma.product.createMany({
-  data: [
+const products=[
+
     // Myszki (5)
     { name: "Logitech G502 HERO", price: 299.99, stock: 40, categoryId: mice.id, brandId: logitech.id, imageUrl:"https://i.ibb.co/bjNFJd9L/mouse-img.png", description: "Logitech G502 HERO to mysz gamingowa wyposażona w ultra-precyzyjny sensor HERO 25K, 11 programowalnych przycisków oraz regulowane obciążniki, które pozwalają dopasować wagę do Twojego stylu gry. Idealna dla graczy szukających precyzji i wygody podczas długich sesji." },
     { name: "Razer DeathAdder V2", price: 249.99, stock: 30, categoryId: mice.id, brandId: razer.id, imageUrl:"https://i.ibb.co/bjNFJd9L/mouse-img.png", description: "Razer DeathAdder V2 to klasyk wśród myszy gamingowych. Wyposażona w optyczny sensor o wysokiej precyzji, ergonomiczny kształt i wytrzymałe przyciski mechaniczne, zapewnia komfort i niezawodność podczas intensywnych rozgrywek." },
@@ -124,36 +126,15 @@ await prisma.product.createMany({
     { name: "ROG Eye S", price: 599.99, stock: 15, categoryId: webcams.id, brandId: rog.id, imageUrl:"https://i.ibb.co/9kcrv3Rh/pobrane-2.jpg", description: "ROG Eye S oferuje szybki autofokus, szeroki kąt widzenia i wysoką jakość obrazu, idealna dla graczy i streamerów." },
     { name: "JBL LiveCam V2", price: 449.99, stock: 18, categoryId: webcams.id, brandId: jbl.id, imageUrl:"https://i.ibb.co/9kcrv3Rh/pobrane-2.jpg", description: "JBL LiveCam V2 to kamera do spotkań online z czystym dźwiękiem i obrazem Full HD, idealna do pracy zdalnej i nauki online." },
     { name: "Rexus StreamCam X", price: 299.99, stock: 10, categoryId: webcams.id, brandId: rexus.id, imageUrl:"https://i.ibb.co/9kcrv3Rh/pobrane-2.jpg", description: "Rexus StreamCam X to kompaktowa kamera do streamingu, oferująca płynny obraz 60fps i wysoką jakość w każdych warunkach oświetleniowych." },
-  ],
-});
+  ]
+
+for (const product of products) {
+  await prisma.product.create({ data: product });
+}
 
 
+ 
 
-  // --- Użytkownik testowy ---
-  // const user = await prisma.user.create({
-  //     data: {
-  //        email: 'user1@example.com',
-  //        firstName: 'Jan Kowalski',
-  //        passwordHash: '$2b$10$KzMlDEUBv7QriGiBs9y1SuPEsuIg8OTUmLsb7cGdCYEQK40.G29z6',
-  //        phone: '123456789',
-  //       },
-  //  })
-
-  // --- Adresy ---
-  // await prisma.address.createMany({
-  //   data: [
-  //     {
-  //       userId: 1,
-  //       country: "Polska",
-  //       province: "Mazowieckie",
-  //       city: "Warszawa",
-  //       postalCode: "00-001",
-  //       addressLine: "ul. Marszałkowska 1",
-  //       isMain: true,
-  //     },
-     
-  //   ],
-  // });
 
   console.log("✅ Seeding zakończony!");
 }
@@ -166,3 +147,11 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+
+
+
+
+
+
+
+  

@@ -33,29 +33,27 @@ model Product {
   description String?
   price       Float
   stock       Int
-  imageUrl    String?
-  categoryId  Int
-  brandId     Int?
+  imageUrl    String    @map("imageurl")  // <-- mapuje na kolumnę w DB
+  categoryId  Int       @map("categoryid")
+  brandId     Int?      @map("brandid")
   category    Category  @relation(fields: [categoryId], references: [id])
   brand       Brand?    @relation(fields: [brandId], references: [id])
   orderItems  OrderItem[]
   cartItems   CartItem[]
-  createdAt   DateTime  @default(now())
+  createdAt   DateTime  @default(now()) @map("createdat")
 }
-
 model Category {
   id          Int       @id @default(autoincrement())
   name        String
   description String?
   image       String?
-  exploreInfo String?
-  products    Product[]
+products    Product[]
 }
 
 model Brand {
   id       Int       @id @default(autoincrement())
   name     String
-  logoUrl  String?
+
   logo  String?
    products Product[]
 }
