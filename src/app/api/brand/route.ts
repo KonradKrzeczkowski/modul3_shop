@@ -1,27 +1,27 @@
 import { prisma } from "@/lib/prisma";
 
-type Brand = {
-  id: number;
-  name: string;
-  logo?: string | null;
-};
-
-export async function getBrands(): Promise<Brand[]> {
+export async function GET() {
   try {
     const brands = await prisma.brand.findMany({
       select: {
         id: true,
         name: true,
-        logo: true, 
+        logo: true,
       },
       orderBy: {
         name: "asc",
       },
     });
 
-    return brands;
+    return new Response(JSON.stringify(brands), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
     console.error("Failed to fetch brands", error);
-    return [];
+    return new Response(JSON.stringify({ error: "Failed to fetch brands" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }

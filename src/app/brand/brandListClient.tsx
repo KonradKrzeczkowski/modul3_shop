@@ -4,13 +4,26 @@ import { useRef, useState, useEffect } from "react";
 import CategoryCard from "@/components/CategoryCard";
 import { Brand } from "@/lib/types";
 
-type Props = {
-  brands: Brand[];
-};
-
-export default function BrandListClient({ brands }: Props) {
+export default function BrandListClient() {
   const listRef = useRef<HTMLDivElement>(null);
+  const [brands, setBrands] = useState<Brand[]>([]);
   const [showSeeMore, setShowSeeMore] = useState(true);
+
+ 
+  useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        const res = await fetch("/api/brand");
+        if (!res.ok) throw new Error("Failed to fetch brands");
+        const data: Brand[] = await res.json();
+        setBrands(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchBrands();
+  }, []);
 
   const handleSeeMore = () => {
     if (listRef.current) {
@@ -30,10 +43,10 @@ export default function BrandListClient({ brands }: Props) {
     checkScroll();
     window.addEventListener("resize", checkScroll);
     return () => window.removeEventListener("resize", checkScroll);
-  }, []);
-  console.log(brands);
+  }, [brands]);
+
   return (
-    <div className="pt-[80px]  pb-[100px]">
+    <div className="pt-[80px] pb-[100px]">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-[28px] font-semibold">Brands</h2>
         {showSeeMore && (
