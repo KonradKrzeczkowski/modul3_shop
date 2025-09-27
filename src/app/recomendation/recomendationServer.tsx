@@ -3,9 +3,7 @@ import RecommendationListClient from "./recomendation";
 
 export default async function RecommendationListServer() {
   const recommendedProducts = await getRecommendedProducts();
-
-
-  return (
+return (
     <RecommendationListClient recommendedProducts={recommendedProducts ?? []} />
   );
 }

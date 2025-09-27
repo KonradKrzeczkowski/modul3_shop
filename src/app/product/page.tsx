@@ -1,13 +1,19 @@
 "use client";
-
 import { useEffect, useState } from "react";
-
 import Link from "next/link";
+import ProductCard from "./cardProduct";
+import ChevronDownIcon from "@/components/icons/chevronDownIcon";
+import Plus from "@/components/icons/plus";
+import { useSearchParams } from "next/navigation";
+import Checkbox from "@/components/checkbox";
+import PaginationProduct from "@/components/paginationProduct";
+import { useMessage } from "@/components/hook/messageContext";
 type Product = {
-  id: string;
+  id: number;
   name: string;
   price: number;
-  category: string;
+  category: { id: string; name: string; image: string };
+  imageUrl: string;
 };
 
 type Pagination = {
@@ -15,44 +21,58 @@ type Pagination = {
   pages: number;
 };
 
+type Category = { id: string; name: string };
+
 export default function ProductPage() {
-  
-
-
   const [products, setProducts] = useState<Product[]>([]);
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
     pages: 1,
   });
   const [loading, setLoading] = useState(false);
-
-
-  const [categories, setCategories] = useState<{ id: string; name: string }[]>(
-    []
-  );
-  const [categoryId, setCategoryId] = useState("");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
-
-  const sortOptions = [
-    { value: "latest", label: "Najnowsze" },
-    { value: "oldest", label: "Najstarsze" },
-    { value: "priceAsc", label: "Od najtańszych" },
-    { value: "priceDesc", label: "Od najdroższych" },
-  ];
   const showOptions = [3, 6, 9, 12, 24];
-
+  const [initialized, setInitialized] = useState(false);
   const [sort, setSort] = useState("latest");
   const [show, setShow] = useState(3);
   const [page, setPage] = useState(1);
+  const { setMessage } = useMessage();
+  const [showAllCategories, setShowAllCategories] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const searchParams = useSearchParams();
 
+  useEffect(() => {
+    const categoriesFromUrl = searchParams.getAll("category");
+    if (categoriesFromUrl.length > 0) {
+      setSelectedCategoryIds(categoriesFromUrl);
+      setInitialized(true);
+    }
+  }, [searchParams]);
+
+  const sortOptions = [
+    { value: "latest", label: "Latest" },
+    { value: "oldest", label: "Oldest" },
+    { value: "priceAsc", label: "The cheapest" },
+    { value: "priceDesc", label: "The most" },
+  ];
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const res = await fetch("/api/category");
         const data = await res.json();
-        setCategories(data ?? []);
+        const uniqueCategories = data.reduce(
+          (acc: Category[], curr: Category) => {
+            if (!acc.some((c) => c.name === curr.name)) {
+              acc.push(curr);
+            }
+            return acc;
+          },
+          []
+        );
+        setCategories(uniqueCategories ?? []);
       } catch (error) {
         console.error(error);
       }
@@ -60,19 +80,19 @@ export default function ProductPage() {
     fetchCategories();
   }, []);
 
-
   const fetchProducts = async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams({
-        ...(categoryId && { categoryId }),
         ...(minPrice && { minPrice }),
         ...(maxPrice && { maxPrice }),
         sort,
         limit: show.toString(),
         page: page.toString(),
       });
-
+      selectedCategoryIds.forEach((id) =>
+        params.append("categoryId", String(id))
+      );
       const res = await fetch(`/api/products?${params.toString()}`);
       const data = await res.json();
       setProducts(data.products);
@@ -88,72 +108,115 @@ export default function ProductPage() {
 
   useEffect(() => {
     fetchProducts();
-  }, [categoryId, minPrice, maxPrice, sort, show, page]);
+  }, [selectedCategoryIds, minPrice, maxPrice, sort, show, page]);
 
-  const handlePageChange = (p: number) => setPage(p);
-  const handlePrev = () => setPage((prev) => Math.max(prev - 1, 1));
-  const handleNext = () =>
-    setPage((prev) => Math.min(prev + 1, pagination.pages));
+  const toggleCategory = (id: string) => {
+    if (id === "all") {
+      setSelectedCategoryIds([]);
+      setPage(1);
+      return;
+    }
+    if (selectedCategoryIds.includes(id)) {
+      setSelectedCategoryIds(selectedCategoryIds.filter((x) => x !== id));
+      setPage(1);
+    } else {
+      setSelectedCategoryIds([...selectedCategoryIds, id]);
+      setPage(1);
+    }
+  };
+
+  const handleAddToCart = async (product: Product) => {
+    try {
+      const res = await fetch("/api/cart/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: product.id, quantity: 1 }),
+      });
+      const data = await res.json();
+      if (data.success) console.log("Wywołałem setMessage");
+      setMessage("Product Successfully Added");
+    } catch (err) {
+      console.error(err);
+      alert("Błąd przy dodawaniu do koszyka");
+    }
+  };
 
   if (loading) return <p>Ładowanie produktów...</p>;
 
   return (
-    <div className="flex p-6 gap-6">
-     <div className="w-1/4 p-4 border rounded space-y-4">
-        <h2 className="text-lg font-semibold">Kategorie</h2>
-        {categories?.length === 0 ? (
-          <p>Brak kategorii</p>
+    <div className="flex flex-col md:flex-row  md:p-6 gap-6 p-0.5">
+      <div className="md:w-1/4 p-4 md:border-r  border-gray-400 space-y-4">
+        <h2 className="text-lg font-semibold">Category</h2>
+        {categories.length === 0 ? (
+          <p>Not found</p>
         ) : (
-          <select
-            value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)} 
-            className="border rounded p-1 w-full"
-          >
-            <option value="">Wszystkie</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+          <div className="space-y-2">
+            <Checkbox
+              checked={selectedCategoryIds.length === 0}
+              onChange={() => toggleCategory("all")}
+              label="All products"
+            />
+            {(showAllCategories ? categories : categories.slice(0, 4)).map(
+              (c) => (
+                <div key={c.id}>
+                  <Checkbox
+                    checked={selectedCategoryIds.includes(c.id.toString())}
+                    onChange={() => toggleCategory(c.id.toString())}
+                    label={c.name}
+                  />
+                </div>
+              )
+            )}
+
+            {categories.length > 4 && (
+              <button
+                onClick={() => setShowAllCategories(!showAllCategories)}
+                className="flex items-center text-blue-500 mt-2 text-sm text-neutral-600 font-inter gap-[14px]"
+              >
+                {showAllCategories ? "Show less" : "Show more"}
+                <Plus />
+              </button>
+            )}
+          </div>
         )}
-
-        <h2 className="text-lg font-semibold mt-6">Cena</h2>
-        <input
-          type="number"
-          placeholder="Min"
-          value={minPrice}
-          onChange={(e) => setMinPrice(e.target.value)}
-          className="border rounded p-1 w-full mb-2"
-        />
-        <input
-          type="number"
-          placeholder="Max"
-          value={maxPrice}
-          onChange={(e) => setMaxPrice(e.target.value)}
-          className="border rounded p-1 w-full"
-        />
-        <button
-          onClick={() => {
-            setMinPrice("");
-            setMaxPrice("");
-          }}
-          className="text-sm text-blue-600 mt-1"
-        >
-          Wyczyść
-        </button>
+        <h2 className="text-lg font-semibold mt-6">price</h2>
+        <div className="md:w-full max-w-[263px] h-[54px] flex border border-gray-400 bg-base rounded overflow-hidden">
+          <input
+            type="number"
+            placeholder="Min"
+            value={minPrice}
+            onChange={(e) => setMinPrice(e.target.value)}
+            className="flex-1 p-2 outline-none border-none h-full w-[157px]"
+          />
+          <div className="flex items-center px-3 border-l border-gray-400 gap-1 h-full text-inter text-[16px] text-neutral-900 ">
+            USD
+            <ChevronDownIcon />
+          </div>
+        </div>
+        <div className="md:w-full max-w-[263px] h-[54px] flex border border-gray-400 bg-base rounded overflow-hidden">
+          <input
+            type="number"
+            placeholder="Max"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(e.target.value)}
+            className="flex-1 p-2 outline-none border-none w-[157px]"
+          />
+          <div className="flex items-center px-3 border-l border-gray-400 gap-1 text-inter text-[16px] text-neutral-900 ">
+            USD
+            <ChevronDownIcon />
+          </div>
+        </div>
       </div>
-
-
-      <div className="w-3/4">
-      
+      <div className="md:w-3/4 w-full">
         <div className="flex justify-between mb-4">
-          <div>
-            <label className="mr-2 font-semibold">Sortuj: </label>
+          <div className="relative inline-block">
+            <label className="mr-2 font-inter text-xl text-neutral-900 font-semibold">
+              Sort by
+            </label>
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value)}
-              className="border rounded p-1"
+              className="border-gray-400 font-inter appearance-none border text-neutral-900 bg-base rounded-[6px] p-2 pr-8 text-sm w-[126px] h-[44px]"
             >
               {sortOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -161,16 +224,21 @@ export default function ProductPage() {
                 </option>
               ))}
             </select>
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+              <ChevronDownIcon className="text-neutral-900" />
+            </div>
           </div>
-          <div>
-            <label className="mr-2 font-semibold">Pokaż: </label>
+          <div className="relative inline-block">
+            <label className="mr-2 font-inter text-xl text-neutral-900 font-semibold">
+              Show
+            </label>
             <select
               value={show}
               onChange={(e) => {
                 setShow(Number(e.target.value));
                 setPage(1);
               }}
-              className="border rounded p-1"
+              className="font-inter appearance-none border border-gray-400 rounded-[6px] bg-base p-2 pr-8 text-sm w-[102px] h-[44px] text-neutral-900 text-sm font-normal"
             >
               {showOptions.map((opt) => (
                 <option key={opt} value={opt}>
@@ -178,61 +246,29 @@ export default function ProductPage() {
                 </option>
               ))}
             </select>
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+              <ChevronDownIcon className="text-neutral-900" />
+            </div>
           </div>
         </div>
-
-       
-        {products?.length === 0 ? (
+        {products.length === 0 ? (
           <p>Brak produktów</p>
         ) : (
-  <div className="grid grid-cols-3 gap-4">
-  {products?.map((p) => (
-    <Link
-      key={p.id}
-      href={`/product/${p.id}`}
-      className="p-4 border rounded shadow-sm hover:shadow-lg block"
-    >
-      <h3 className="text-lg font-semibold">{p.name}</h3>
-      <p className="text-gray-600">{p.price} zł</p>
-    </Link>
-  ))}
-</div>
-        )}
-
-       
-        <div className="flex justify-between items-center mt-6">
-          <div className="flex gap-2">
-            {Array.from({ length: pagination.pages }, (_, i) => (
-              <button
-                key={i}
-                onClick={() => handlePageChange(i + 1)}
-                className={`px-3 py-1 rounded ${
-                  pagination.page === i + 1
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-200 text-gray-800"
-                }`}
-              >
-                {i + 1}
-              </button>
+          <div className=" flex flex-wrap justify-center w-full gap-4">
+            {products.map((p) => (
+              <Link key={p.id} href={`/product/${p.id}`}>
+                <ProductCard
+                  imageUrl={p.imageUrl || p.category.image}
+                  category={p.category.name}
+                  name={p.name}
+                  price={p.price}
+                  onAddToCart={() => handleAddToCart(p)}
+                />
+              </Link>
             ))}
           </div>
-          <div className="flex gap-2">
-            <button
-              onClick={handlePrev}
-              disabled={pagination.page === 1}
-              className="px-3 py-1 rounded border disabled:opacity-50"
-            >
-              Previous
-            </button>
-            <button
-              onClick={handleNext}
-              disabled={pagination.page === pagination.pages}
-              className="px-3 py-1 rounded border disabled:opacity-50"
-            >
-              Next
-            </button>
-          </div>
-        </div>
+        )}
+        <PaginationProduct pagination={pagination} setPage={setPage} />
       </div>
     </div>
   );

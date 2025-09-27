@@ -1,0 +1,14 @@
+import React from 'react'
+
+const GreatOrder = () => {
+  return (
+    <div>
+      <svg width="66" height="66" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M49.6667 23L26.3333 46.3334L16.3331 36.3333M63 33C63 49.5685 49.5685 63 33 63C16.4315 63 3 49.5685 3 33C3 16.4315 16.4315 3 33 3C49.5685 3 63 16.4315 63 33Z" stroke="#4ADE80" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
+</svg>
+
+    </div>
+  )
+}
+
+export default GreatOrder

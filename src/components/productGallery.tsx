@@ -1,49 +1,67 @@
-import { useState } from "react";
 import Image from "next/image";
+import { useState } from "react";
 
-type Product = {
-  id: string;
-  name: string;
-  image: string;
+type ProductImageGalleryProps = {
+  images: string;
 };
 
-type Props = {
-  products: Product[];
-};
-
-const ProductGallery = ({ products }: Props) => {
-   const [mainImage, setMainImage] = useState(products[0].image);
+export default function ProductImageGallery({
+  images,
+}: ProductImageGalleryProps) {
+  const [selected, setSelected] = useState(images);
+  console.log(images);
 
   return (
-    <div className="p-4">
-<div className="p-3 mb-8">
+    <div className="flex flex-col gap-8 w-full max-w-[422px]">
+      <div className="md:w-[422px] w-full h-[341px]   overflow-hidden p-3">
         <Image
-          src={mainImage}
-          alt="Duże zdjęcie produktu"
+          src={selected}
+          alt="Product"
           width={600}
           height={400}
-          className="w-full h-auto object-cover rounded-md"
+          className="object-cover w-full h-full"
         />
       </div>
-<div className="flex gap-4 justify-center">
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="cursor-pointer border rounded-md overflow-hidden hover:opacity-80 transition-opacity"
-            onClick={() => setMainImage(product.image)}
-          >
-            <Image
-              src={product.image}
-              alt={product.name}
-              width={150}
-              height={100}
-              className="object-cover"
-            />
-          </div>
-        ))}
+      <div className="flex gap-[16px]">
+        <div
+          onClick={() => setSelected(images)}
+          className={`w-[130px] h-[99px] cursor-pointer overflow-hidden "}`}
+        >
+          <Image
+            src={images}
+            alt="Thumbnail 0"
+            width={130}
+            height={99}
+            className="object-cover w-full h-full"
+          />
+        </div>
+
+        <div
+          onClick={() => setSelected(images)}
+          className={`w-[130px] h-[99px] cursor-pointer overflow-hidden"}`}
+        >
+          <Image
+            src={images}
+            alt="Thumbnail 1"
+            width={130}
+            height={99}
+            className="object-cover w-full h-full"
+          />
+        </div>
+
+        <div
+          onClick={() => setSelected(images)}
+          className={`w-[130px] h-[99px]  cursor-pointer overflow-hidden "}`}
+        >
+          <Image
+            src={images}
+            alt="Thumbnail 2"
+            width={130}
+            height={99}
+            className="object-cover w-full h-full"
+          />
+        </div>
       </div>
     </div>
   );
-};
-
-export default ProductGallery;
+}

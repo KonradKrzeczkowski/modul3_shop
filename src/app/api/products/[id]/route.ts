@@ -3,10 +3,10 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   req: Request,
-  context: { params: { id: string } }
+context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = context.params;
+    const { id } = await context.params;
     const productId = parseInt(id, 10);
 
     if (isNaN(productId)) {
@@ -15,16 +15,7 @@ export async function GET(
 
     const product = await prisma.product.findUnique({
       where: { id: productId },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        price: true,
-        stock: true,
-        createdAt: true,
-        category: { select: { id: true, name: true } },
-        brand: { select: { id: true, name: true, logo: true } },
-      },
+ 
     });
 
     if (!product) {
@@ -37,3 +28,4 @@ export async function GET(
     return NextResponse.json({ error: "Błąd serwera" }, { status: 500 });
   }
 }
+

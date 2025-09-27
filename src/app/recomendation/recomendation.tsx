@@ -1,24 +1,27 @@
 "use client";
-
+import ProductCard from "../product/cardProduct";
 import { useRef, useState, useEffect } from "react";
-import RecommendationCard from "./card";
-
+import { useMessage } from "@/components/hook/messageContext";
+import Link from "next/link";
 type Product = {
   id: number;
   name: string;
   price: number;
-  category: string;
-  categoryImage?: string | null;
+  category: { id: number; name: string; image: string };
+  imageUrl: string;
 };
 
 type Props = {
   recommendedProducts: Product[];
 };
 
-export default function RecommendationListClient({ recommendedProducts }: Props) {
+export default function RecommendationListClient({
+  recommendedProducts,
+}: Props) {
   const listRef = useRef<HTMLDivElement>(null);
   const [showSeeMore, setShowSeeMore] = useState(true);
-
+  const { message, setMessage } = useMessage();
+  const [add, setAdd] = useState("");
   const handleSeeMore = () => {
     if (listRef.current) {
       const scrollAmount = listRef.current.offsetWidth;
@@ -34,14 +37,15 @@ export default function RecommendationListClient({ recommendedProducts }: Props)
 
   const handleAddToCart = async (product: Product) => {
     try {
-
-      const res = await fetch("/api/cart", {
+      const res = await fetch("/api/cart/cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId: product.id, quantity: 1 }),
       });
       const data = await res.json();
-      if (data.success) alert("Dodano do koszyka!");
+      if (data.success) console.log("Wywołałem setMessage");
+      setMessage("Dodano do koszyk");
+      setAdd("dup");
     } catch (err) {
       console.error(err);
       alert("Błąd przy dodawaniu do koszyka");
@@ -49,15 +53,25 @@ export default function RecommendationListClient({ recommendedProducts }: Props)
   };
 
   useEffect(() => {
+    console.log("Nowy message:", message);
+  }, [message]);
+
+  useEffect(() => {
+    console.log("Nowe add:", add);
+  }, [add]);
+  useEffect(() => {
     checkScroll();
   }, []);
 
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h2  className="text-[28px] font-semibold">Recommendation</h2>
+        <h2 className="text-[28px] font-semibold">Recommendation</h2>
         {showSeeMore && (
-          <button onClick={handleSeeMore} className="text-blue-500 hover:underline">
+          <button
+            onClick={handleSeeMore}
+            className="text-blue-500 hover:underline"
+          >
             See more
           </button>
         )}
@@ -70,7 +84,17 @@ export default function RecommendationListClient({ recommendedProducts }: Props)
       >
         {recommendedProducts.map((product) => (
           <div key={product.id} className="flex-shrink-0">
-            <RecommendationCard product={product} onAddToCart={handleAddToCart} />
+            <Link href={`/product/${product.id}`}>
+              <ProductCard
+                imageUrl={product.imageUrl || product.category.image}
+                category={product.category.name}
+                name={product.name}
+                price={product.price}
+                onAddToCart={() => {
+                  handleAddToCart(product);
+                }}
+              />
+            </Link>
           </div>
         ))}
       </div>

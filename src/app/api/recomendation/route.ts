@@ -3,60 +3,55 @@ import { prisma } from "@/lib/prisma";
 type Product = {
   id: number;
   name: string;
-  categoryId: number;
   price: number;
-  category: string;
-  categoryImage?: string | null;
+  category: { id: number; name: string; image: string };
+  imageUrl: string;
 };
 
 export async function getRecommendedProducts(): Promise<Product[]> {
   try {
-
     const productsRaw = await prisma.product.findMany({
       select: {
         id: true,
         name: true,
         categoryId: true,
         price: true,
+        imageUrl: true,
         category: {
-          select: { name: true, image: true }, 
+          select: { id: true, name: true, image: true },
         },
       },
     });
 
- 
     const products: Product[] = productsRaw.map((p) => ({
       id: p.id,
       name: p.name,
-      categoryId: p.categoryId,
       price: p.price,
-      category: p.category.name,
-      categoryImage: p.category.image,
+      imageUrl: p.imageUrl ?? p.category.image ?? "",
+      category: {
+        id: p.categoryId,
+        name: p.category.name,
+        image: p.category.image ?? "",
+      },
     }));
 
-    if (!products.length) {
-      return []; 
-    }
+    if (!products.length) return [];
 
-  
-    const categoriesMap: Record<number, Product[]> = {};
+    const categoriesMap: Record<string, Product[]> = {};
     for (const product of products) {
-      if (!categoriesMap[product.categoryId]) {
-        categoriesMap[product.categoryId] = [];
+      if (!categoriesMap[product.category.id]) {
+        categoriesMap[product.category.id] = [];
       }
-      categoriesMap[product.categoryId].push(product);
+      categoriesMap[product.category.id].push(product);
     }
 
     const selected: Product[] = [];
-
-   
-    for (const category of Object.keys(categoriesMap)) {
-      const items = categoriesMap[parseInt(category)];
+    for (const categoryId of Object.keys(categoriesMap)) {
+      const items = categoriesMap[categoryId];
       const random = items[Math.floor(Math.random() * items.length)];
       selected.push(random);
     }
 
- 
     if (selected.length < 6) {
       const remaining = products.filter(
         (p) => !selected.find((s) => s.id === p.id)
@@ -65,7 +60,6 @@ export async function getRecommendedProducts(): Promise<Product[]> {
       selected.push(...shuffled.slice(0, 6 - selected.length));
     }
 
-    
     return selected.slice(0, 6);
   } catch (error) {
     console.error("Failed to fetch recommendations", error);

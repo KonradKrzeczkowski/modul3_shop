@@ -4,7 +4,7 @@ type Product = {
   id: number;
   name: string;
   price: number;
-  category: string;
+  category: {name:string};
   categoryImage?: string | null;
 };
 type Props = {
@@ -37,7 +37,7 @@ export default function RecommendationCard({ product, onAddToCart }: Props) {
 
       <div className="p-4">
         <h3 className="text-lg font-semibold">{product.name}</h3>
-        <p className="text-sm text-gray-500">{product.category}</p>
+        <p className="text-sm text-gray-500">{product.category.name}</p>
         <p className="text-md font-bold">${product.price}</p>
       </div>
     </div>

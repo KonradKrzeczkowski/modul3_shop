@@ -13,6 +13,7 @@ export async function GET() {
         phone: true,
         createdAt: true,
         passwordHash:true,
+        cart:true,
       },
     });
     return NextResponse.json(users);
@@ -26,7 +27,7 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { email, password, phone, address } = body;
+    const { email, password, phone, country } = body;
 
     if (!email || !password || !phone) {
       return NextResponse.json({ error: "Email, password and mobile are required" }, { status: 400 });
@@ -43,7 +44,7 @@ if (existingPhone) {
     const passwordHash = await bcrypt.hash(password, 10);
 
     const user = await prisma.user.create({
-      data: { email, phone, passwordHash, address },
+      data: { email, phone, passwordHash, country },
     });
 
     return NextResponse.json({ id: user.id, email: user.email });

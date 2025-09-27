@@ -1,8 +1,14 @@
 @import "tailwindcss";
-
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  :root {
+  --font-inter: 'Inter', sans-serif;
+  --font-fira-code: 'Fira Code', monospace;
+}
 }
 @theme {
    --font-geist-sans: 'Inter', sans-serif;
@@ -28,7 +34,7 @@
    --color-neutral-200: #d1d1d1;
    --color-neutral-300: #b0b0b0; 
    --color-neutral-400: #888888;
-   --color-neutral-500: #737373;
+   --color-neutral-500: #B0B0B0;
    --color-neutral-600: #E7E7E7;
    --color-neutral-700: #4f4f4f;
    --color-neutral-800: #454545;
@@ -45,11 +51,11 @@
    --color-primary-800: #943518;
    --color-primary-900: #40150a;
 
-   --color-success-50: #f0fdf5; 
+   --color-success-50: #295B40; 
    --color-success-100: #dcfce8;
    --color-success-200: #bbf7d1;
    --color-success-300: #86efad;
-   --color-success-400: #4ade80;
+   --color-success-400: #22C55E;
    --color-success-500: #22c55e;
    --color-success-600: #16a34a;
    --color-success-700: #15803c;
@@ -70,7 +76,7 @@
    --color-danger-50: #fef2f2; 
    --color-danger-100: #fee2e2;
    --color-danger-200: #fecaca;
-   --color-danger-300: #fca5a5;
+   --color-danger-300:#DC2626;
    --color-danger-400: #f87171;
    --color-danger-500: #ef4444;
    --color-danger-600: #dc2626;
@@ -140,7 +146,7 @@
    --color-greenEverglade-800: #12281c;
    --color-greenEverglade-900: #0e1f15;
 
-   --color-blazeOrange-50: #fff0e7;
+   --color-blazeOrange-50: #E5610A;
    --color-blazeOrange-100: #fed1b3;
    --color-blazeOrange-200: #febb8f;
    --color-blazeOrange-300: #fd9c5c;
@@ -160,6 +166,49 @@
   -ms-overflow-style: none;
   scrollbar-width: none; 
 }
+.custom-checkbox-container {
+   position: relative;
+   display: inline-block;
+   top: 7px;
+}
+
+
+.custom-checkbox-mark {
+   position: absolute;
+   width: 26px;
+   height: 26px;
+   background-color: var(--color-gray-50);
+   border: 2px solid var(--color-gray-400); 
+   border-radius: 6px; 
+   cursor: pointer;
+   transition:
+      background-color 0.2s,
+      border-color 0.2s;
+}
+
+
+.custom-checkbox-container input:checked ~ .custom-checkbox-mark {
+   background-color: var(--color-primary-400);
+   border-color: var(--color-primary-400);
+}
+
+
+.custom-checkbox-mark:after {
+   content: '';
+   position: absolute;
+   display: none;
+}
+
+
+.custom-checkbox-container input:checked ~ .custom-checkbox-mark:after {
+   display: block;
+   content: '✓'; 
+   color: black; 
+   font-size: 24px; 
+   font-weight: 900; 
+   left: 3px; 
+   top: -8px;
+}
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -171,4 +220,5 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  
 }

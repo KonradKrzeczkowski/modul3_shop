@@ -1,12 +1,16 @@
+"use client";
 import "./globals.css";
 import Footer from "./footer";
-import Header from "./header";
+import { MessageProvider } from "@/components/hook/messageContext";
+import { SessionProvider } from "next-auth/react";
+import HeaderLayout from "./headerLayout";
+// export const metadata = {
+//   title: 'Shop',
+//   description: 'My Shop App',
+// }
+import { Inter } from "next/font/google";
 
-export const metadata = {
-  title: 'Shop',
-  description: 'My Shop App',
-}
-
+const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -15,16 +19,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-    <body className="flex flex-col min-h-screen">
-      <Header/>
-      
-        <main className="flex-grow px-[40px]">{children}
-      
-        </main>
-        <Footer /> 
+      <body
+        className={`${inter.className} antialiased flex flex-col max-w-[1920px] m-auto`}
+      >
+        <SessionProvider>
+          <MessageProvider>
+            <HeaderLayout />
+            <main>{children}</main>
+            <Footer />
+          </MessageProvider>
+        </SessionProvider>
       </body>
-
-
     </html>
   );
 }

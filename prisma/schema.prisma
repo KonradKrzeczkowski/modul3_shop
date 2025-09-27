@@ -19,11 +19,12 @@ model User {
   firstName    String?
   email        String    @unique
   passwordHash String
-  address      String?
+  address      Address[] 
   phone        String    @unique
   orders       Order[]
   cart         Cart?
   createdAt    DateTime  @default(now())
+  country      String?   
 }
 
 model Product {
@@ -75,6 +76,7 @@ model OrderItem {
   productId       Int
   quantity        Int
   priceAtPurchase Float
+  protection      Boolean  @default(false) 
   order           Order    @relation(fields: [orderId], references: [id])
   product         Product  @relation(fields: [productId], references: [id])
 }
@@ -95,4 +97,16 @@ model CartItem {
   addedPrice Float    // cena produktu w momencie dodania do koszyka
   cart       Cart     @relation(fields: [cartId], references: [id])
   product    Product  @relation(fields: [productId], references: [id])
+}
+model Address {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  country     String
+  province    String
+  city        String
+  postalCode  String
+  addressLine String
+  isMain      Boolean  @default(false) 
+  createdAt   DateTime @default(now())
 }

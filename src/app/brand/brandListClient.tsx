@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import CategoryCard from "@/components/CategoryCard";
-import { Brand } from "@/lib/types"; 
+import { Brand } from "@/lib/types";
 
 type Props = {
   brands: Brand[];
@@ -14,8 +14,7 @@ export default function BrandListClient({ brands }: Props) {
 
   const handleSeeMore = () => {
     if (listRef.current) {
-    
-      const gap = 24; 
+      const gap = 24;
       const scrollAmount = 220 + gap;
       listRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
@@ -32,7 +31,7 @@ export default function BrandListClient({ brands }: Props) {
     window.addEventListener("resize", checkScroll);
     return () => window.removeEventListener("resize", checkScroll);
   }, []);
-
+  console.log(brands);
   return (
     <div className="pt-[80px]  pb-[100px]">
       <div className="flex justify-between items-center mb-4">
@@ -49,17 +48,22 @@ export default function BrandListClient({ brands }: Props) {
 
       <div
         ref={listRef}
-        className="flex gap-6 overflow-x-auto pb-4 scroll-smooth hide-scrollbar"
+        className="flex gap-6 overflow-x-auto pb-4 scroll-smooth hide-scrollbar justify-between"
         onScroll={checkScroll}
       >
-        {brands.map((brand) => (
-          <div key={brand.id} className="flex-shrink-0">
-            <CategoryCard
-              imageSrc={brand.logo ?? "/placeholder.png"}
-              name={brand.name}
-            />
-          </div>
-        ))}
+        {brands
+          .filter(
+            (brand, index, self) =>
+              index === self.findIndex((b) => b.name === brand.name)
+          )
+          .map((brand) => (
+            <div key={brand.id} className="flex-shrink-0">
+              <CategoryCard
+                imageSrc={brand.logo ?? "/placeholder.png"}
+                name={brand.name}
+              />
+            </div>
+          ))}
       </div>
     </div>
   );

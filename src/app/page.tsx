@@ -7,7 +7,7 @@ import BrandListServer from "./brand/brand";
 export default function Home() {
   return (
     <div >
-            <main className="flex-grow px-[40px]"> <CategoriesPage/>
+            <main className="flex-grow md:px-[40px] "> <CategoriesPage/>
         <CategoryHome/>
         <RecommendationListServer />
        <BrandListServer/>

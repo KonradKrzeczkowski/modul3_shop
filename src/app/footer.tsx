@@ -22,7 +22,7 @@ export default function Footer() {
 
 
   <div className="mt-[32px] flex flex-wrap gap-4 m-0 p-0">
-    <Image src="/home/Badge.svg" alt="Visa 1" width={46.61} height={30.03} className="object-contain m-0 p-0" />
+    <Image  src="/home/Badge.svg" alt="Visa 1" width={46.61} height={30.03} className="object-contain m-0 p-0" />
     <Image src="/home/Badge1.svg" alt="MasterCard" width={46.61} height={30.03} className="object-contain" />
     <Image src="/home/Badge2.svg" alt="PayPal" width={46.61} height={30.03} className="object-contain" />
     <Image src="/home/Badge3.svg" alt="ApplePay" width={46.61} height={30.03} className="object-contain" />
@@ -32,11 +32,11 @@ export default function Footer() {
 
 
    
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-[40px] text-sm">
+        <div className="grid md:grid-cols-2 grid-cols sm:grid-cols-2 md:grid-cols-4 gap-[40px] text-sm">
   
           <div className=" w-[191.06px]">
-            <h3 className=" text-[20px] text-[var(--color-heading)] font-semibold mb-[32px]">Company</h3>
-        <ul className=" text-[16px] flex flex-col gap-[6px] text-[var(--color-neutral-600)]" >
+            <h3 className=" text-[20px] text-neutral-900 font-semibold mb-[32px]">Company</h3>
+        <ul className=" text-[16px] flex flex-col gap-[6px] text-neutral-600 " >
               <li>About Us</li>
               <li>Contact</li>
               <li>Partner</li>
@@ -45,8 +45,8 @@ export default function Footer() {
 
      
           <div className=" w-[191.06px]">
-            <h3 className=" text-[20px] text-[var(--color-neutral-900)] font-semibold mb-[32px]">Social</h3>
-          <ul className=" text-[16px] flex flex-col gap-[6px] text-[var(--color-neutral-600)]" >
+            <h3 className=" text-[20px] text-neutral-900 font-semibold mb-[32px]">Social</h3>
+          <ul className=" text-[16px] flex flex-col gap-[6px] text-neutral-600" >
               <li>Instagram</li>
               <li>Twitter</li>
               <li>Facebook</li>
@@ -56,8 +56,8 @@ export default function Footer() {
 
 
           <div className=" w-[191.06px]">
-            <h3 className=" text-[20px] text-[var(--color-neutral-900)] font-semibold mb-[32px]">FAQ</h3>
-             <ul className=" text-[16px] flex flex-col gap-[6px] text-[var(--color-neutral-600)]" >
+            <h3 className=" text-[20px] text-neutral-900 font-semibold mb-[32px]">FAQ</h3>
+             <ul className=" text-[16px] flex flex-col gap-[6px] text-neutral-600" >
               <li>Account</li>
               <li>Deliveries</li>
               <li>Orders</li>
@@ -67,8 +67,8 @@ export default function Footer() {
 
         
           <div className=" w-[191.06px]">
-            <h3 className=" text-[20px] text-[var(--color-neutral-900)] font-semibold mb-[32px]">Resources</h3>
-            <ul className=" text-[16px] flex flex-col gap-[6px] text-[var(--color-neutral-600)]" >
+            <h3 className=" text-[20px] text-neutral-900 font-semibold mb-[32px]">Resources</h3>
+            <ul className=" text-[16px] flex flex-col gap-[6px] text-neutral-600" >
               <li>E-books</li>
               <li>Tutorials</li>
               <li>Course</li>

@@ -26,7 +26,7 @@ export default function Button({
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 font-medium transition-colors duration-200 ${className}`}
+      className={`px-4 py-2 font-medium  duration-200 flex items-center justify-center ${className}`}
       style={{
         backgroundColor: bgColor,
         color: textColor,
