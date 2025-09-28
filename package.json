@@ -2,9 +2,10 @@
   "name": "shop",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "dev": "next dev --turbopack",
-  "build": "prisma generate && prisma migrate deploy && next build",
+"scripts": {
+  "dev": "next dev --turbopack",
+  "build": "prisma generate && next build",
+  "migrate": "DATABASE_URL=$DIRECT_URL prisma migrate deploy",
   "start": "next start",
   "lint": "next lint",
   "seed": "node prisma/seed.js",
@@ -12,7 +13,7 @@
   "stop:db": "docker-compose down",
   "start:app": "npm run start:db && npm run build && npm run start",
   "postinstall": "prisma generate"
-  },
+},
   "dependencies": {
     "@prisma/client": "^6.16.1",
     "bcrypt": "^6.0.0",
