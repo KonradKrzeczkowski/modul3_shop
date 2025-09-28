@@ -1,10 +1,12 @@
 "use client";
-import { useEffect, useState, use } from "react";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Delete from "@/icons/delete";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useMessage } from "./hook/messageContext";
 import Checkbox from "./checkbox";
+
 type CartItem = {
   id: number;
   cartId: number;
@@ -26,14 +28,15 @@ type Cart = {
   items: CartItem[];
 };
 
-export default function Cart({ params }: { params: Promise<{ id: string }> }) {
+export default function Cart() {
+  const { id } = useParams(); // <--- pobiera id z URL
   const router = useRouter();
-  const { id } = use(params);
+  const { setMessage } = useMessage();
+
   const [cart, setCart] = useState<Cart | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const { setMessage } = useMessage();
 
   const fetchCart = async () => {
     setLoading(true);
@@ -68,14 +71,11 @@ export default function Cart({ params }: { params: Promise<{ id: string }> }) {
   const removeItem = async (itemId: number) => {
     await fetch(`/api/cart/cart/item/${itemId}`, { method: "DELETE" });
     fetchCart();
-    console.log(itemId);
   };
 
   const toggleSelectItem = (itemId: number) => {
     setSelectedItems((prev) =>
-      prev.includes(itemId)
-        ? prev.filter((id) => id !== itemId)
-        : [...prev, itemId]
+      prev.includes(itemId) ? prev.filter((id) => id !== itemId) : [...prev, itemId]
     );
   };
 
@@ -92,8 +92,7 @@ export default function Cart({ params }: { params: Promise<{ id: string }> }) {
     cart?.items.filter((item) => selectedItems.includes(item.id)) || [];
 
   const subtotal = selectedProducts.reduce(
-    (sum, item) =>
-      sum + item.quantity * (item.product?.price ?? item.addedPrice),
+    (sum, item) => sum + item.quantity * (item.product?.price ?? item.addedPrice),
     0
   );
 
@@ -129,7 +128,7 @@ export default function Cart({ params }: { params: Promise<{ id: string }> }) {
   if (loading) return <div>Ładowanie...</div>;
   if (error) return <div>Błąd: {error}</div>;
   if (!cart || cart.items.length === 0) return <div>Koszyk pusty</div>;
-  console.log(cart);
+
   return (
     <div className="flex flex-wrap md:gap-[48px] md:p-[40px] p-2 mx-auto">
       <div className="w-full md:w-[839px]">
@@ -186,7 +185,6 @@ export default function Cart({ params }: { params: Promise<{ id: string }> }) {
 
                   <div className="flex flex-col md:flex-row justify-between items-center w-full mt-3 gap-3">
                     <p>$ {item.product?.price ?? item.addedPrice} </p>
-
                     <div className="flex flex-col md:flex-row gap-3 font-inter">
                       <p className="text-primary-500 md:border-r border-gray-500 pr-0 md:pr-[24px]">
                         Write Note

@@ -1,11 +1,13 @@
 import Breadcrumb from "@/components/Breadcrumb";
 import Cart from "@/components/Cart";
 
-export default function CartPage({ params }: { params: { id: string } }) {
+
+
+export default function CartPage() {
   return (
     <div className="md:p-4">
       <Breadcrumb />
-      <Cart params={Promise.resolve(params)} />
+      <Cart  />
     </div>
   );
 }

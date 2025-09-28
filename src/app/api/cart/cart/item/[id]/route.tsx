@@ -1,23 +1,25 @@
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { NextResponse } from "next/server";
+import { NextRequest,NextResponse } from "next/server";
 
-// PATCH - zmiana ilości produktu w koszyku
+
+
+type Params = Promise<{ id: string }>;
+
 export async function PATCH(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  segmentData: { params: Params }
 ) {
   try {
+    const params = await segmentData.params; // <- czekamy na promise
+    const itemId = parseInt(params.id, 10);
+
     const body = await req.json();
     const { quantity } = body;
-    const itemId = parseInt(params.id);
 
     if (!quantity || quantity < 1) {
-      return NextResponse.json(
-        { message: "Nieprawidłowa ilość" },
-        { status: 400 }
-      );
+      return NextResponse.json({ message: "Nieprawidłowa ilość" }, { status: 400 });
     }
 
     const session = await getServerSession(authOptions);
@@ -51,39 +53,47 @@ export async function PATCH(
   }
 }
 
-// DELETE - usuwanie produktu z koszyka
 export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  segmentData: { params: Params }
 ) {
   try {
+    const params = await segmentData.params;
     const itemId = parseInt(params.id, 10);
-    if (isNaN(itemId)) return NextResponse.json({ message: "Nieprawidłowe ID" }, { status: 400 });
+
+    if (isNaN(itemId)) {
+      return NextResponse.json({ message: "Nieprawidłowe ID" }, { status: 400 });
+    }
 
     const session = await getServerSession(authOptions);
-    if (!session?.user?.email) return NextResponse.json({ message: "Nie zalogowany" }, { status: 401 });
+    if (!session?.user?.email) {
+      return NextResponse.json({ message: "Nie zalogowany" }, { status: 401 });
+    }
 
-    // Szukamy itemu, który należy do użytkownika
     const item = await prisma.cartItem.findFirst({
       where: {
         id: itemId,
-        cart: {
-          user: { email: session.user.email },
-        },
+        cart: { user: { email: session.user.email } },
       },
     });
 
-    if (!item) return NextResponse.json({ message: "Produkt w koszyku nie istnieje" }, { status: 404 });
+    if (!item) {
+      return NextResponse.json({ message: "Produkt w koszyku nie istnieje" }, { status: 404 });
+    }
 
     await prisma.cartItem.delete({ where: { id: itemId } });
 
-    return NextResponse.json({ message: "Produkt usunięty z koszyka ✅" });
+    const cart = await prisma.cart.findFirst({
+      where: { user: { email: session.user.email } },
+      include: { items: { include: { product: true } } },
+    });
+
+    return NextResponse.json(cart, { status: 200 });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: "Błąd serwera" }, { status: 500 });
+    console.error("DELETE /api/cart/item/[id] error:", error);
+    return NextResponse.json({ message: "Błąd serwera ❌" }, { status: 500 });
   }
 }
-
 
 export async function GET() {
   try {

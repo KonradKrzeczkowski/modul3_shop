@@ -3,6 +3,7 @@ import ProductCard from "../product/cardProduct";
 import { useRef, useState, useEffect } from "react";
 import { useMessage } from "@/components/hook/messageContext";
 import Link from "next/link";
+
 type Product = {
   id: number;
   name: string;
@@ -11,17 +12,25 @@ type Product = {
   imageUrl: string;
 };
 
-type Props = {
-  recommendedProducts: Product[];
-};
-
-export default function RecommendationListClient({
-  recommendedProducts,
-}: Props) {
+export default function RecommendationListClient() {
   const listRef = useRef<HTMLDivElement>(null);
   const [showSeeMore, setShowSeeMore] = useState(true);
   const { message, setMessage } = useMessage();
   const [add, setAdd] = useState("");
+  const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
+
+  // Fetch rekomendowanych produktów
+  const fetchRecommendedProducts = async () => {
+    try {
+      const res = await fetch("/api/products/recommended");
+      if (!res.ok) throw new Error("Nie udało się pobrać produktów");
+      const data: Product[] = await res.json();
+      setRecommendedProducts(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleSeeMore = () => {
     if (listRef.current) {
       const scrollAmount = listRef.current.offsetWidth;
@@ -43,8 +52,7 @@ export default function RecommendationListClient({
         body: JSON.stringify({ productId: product.id, quantity: 1 }),
       });
       const data = await res.json();
-      if (data.success) console.log("Wywołałem setMessage");
-      setMessage("Dodano do koszyk");
+      if (data.success) setMessage("Dodano do koszyka");
       setAdd("dup");
     } catch (err) {
       console.error(err);
@@ -53,15 +61,12 @@ export default function RecommendationListClient({
   };
 
   useEffect(() => {
-    console.log("Nowy message:", message);
-  }, [message]);
+    fetchRecommendedProducts();
+  }, []);
 
   useEffect(() => {
-    console.log("Nowe add:", add);
-  }, [add]);
-  useEffect(() => {
     checkScroll();
-  }, []);
+  }, [recommendedProducts]);
 
   return (
     <div>
@@ -90,9 +95,7 @@ export default function RecommendationListClient({
                 category={product.category.name}
                 name={product.name}
                 price={product.price}
-                onAddToCart={() => {
-                  handleAddToCart(product);
-                }}
+                onAddToCart={() => handleAddToCart(product)}
               />
             </Link>
           </div>

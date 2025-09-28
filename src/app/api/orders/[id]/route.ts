@@ -1,12 +1,19 @@
-import { NextResponse } from "next/server";
+
+
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+type Params = Promise<{ id: string }>;
+
 export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  segmentData: { params: Params }
 ) {
   try {
+    // Czekamy na promise
+    const params = await segmentData.params;
     const orderId = parseInt(params.id, 10);
+
     if (isNaN(orderId)) {
       return NextResponse.json({ error: "Invalid order ID" }, { status: 400 });
     }

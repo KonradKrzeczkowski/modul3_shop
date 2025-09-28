@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
 
 type Product = {
   id: number;
@@ -8,7 +9,7 @@ type Product = {
   imageUrl: string;
 };
 
-export async function getRecommendedProducts(): Promise<Product[]> {
+export async function GET() {
   try {
     const productsRaw = await prisma.product.findMany({
       select: {
@@ -35,7 +36,7 @@ export async function getRecommendedProducts(): Promise<Product[]> {
       },
     }));
 
-    if (!products.length) return [];
+    if (!products.length) return NextResponse.json([], { status: 200 });
 
     const categoriesMap: Record<string, Product[]> = {};
     for (const product of products) {
@@ -60,9 +61,9 @@ export async function getRecommendedProducts(): Promise<Product[]> {
       selected.push(...shuffled.slice(0, 6 - selected.length));
     }
 
-    return selected.slice(0, 6);
+    return NextResponse.json(selected.slice(0, 6), { status: 200 });
   } catch (error) {
     console.error("Failed to fetch recommendations", error);
-    return [];
+    return NextResponse.json({ message: "Błąd serwera" }, { status: 500 });
   }
 }
