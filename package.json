@@ -2,17 +2,17 @@
   "name": "shop",
   "version": "0.1.0",
   "private": true,
-"scripts": {
+ "scripts": {
   "dev": "next dev --turbopack",
   "build": "prisma generate && next build",
-  "migrate": "DATABASE_URL=$DIRECT_URL prisma migrate deploy",
+  "migrate": "cross-env DATABASE_URL=$DIRECT_URL prisma migrate deploy",
+  "seed": "cross-env DATABASE_URL=$DIRECT_URL node prisma/seed.js",
   "start": "next start",
   "lint": "next lint",
-  "seed": "node prisma/seed.js",
   "start:db": "docker-compose up -d",
   "stop:db": "docker-compose down",
   "start:app": "npm run start:db && npm run build && npm run start",
-  "postinstall": "prisma generate"
+  "postinstall": "prisma generate && npm run migrate && npm run seed"
 },
   "dependencies": {
     "@prisma/client": "^6.16.1",
@@ -36,6 +36,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.21",
+    "cross-env": "^10.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.0",
     "tailwindcss": "^4",
