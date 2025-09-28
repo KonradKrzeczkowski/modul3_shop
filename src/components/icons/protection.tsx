@@ -1,0 +1,13 @@
+import React from 'react'
+
+const Protection = () => {
+  return (
+    <div>
+      <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M11.9998 8.00003L7.99983 12.0001L5.99973 10M10.069 18.5996C13.862 16.8285 16.1651 11.8644 16.8117 7.46233C17.0318 5.96332 16.1437 4.57203 14.7886 3.89446L10.7886 1.89446C9.66245 1.3314 8.33697 1.3314 7.21086 1.89446L3.21086 3.89446C1.85572 4.57203 0.967588 5.96333 1.18776 7.46233C1.83432 11.8644 4.13741 16.8285 7.93038 18.5996C8.60719 18.9156 9.39223 18.9156 10.069 18.5996Z" stroke="#4ADE80" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+</svg>
+    </div>
+  )
+}
+
+export default Protection

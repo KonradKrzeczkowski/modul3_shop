@@ -2,26 +2,45 @@
   "name": "shop",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start",
-    "lint": "eslint"
-  },
+"scripts": {
+  "dev": "next dev --turbopack",
+  "build": "prisma generate && next build",
+  "migrate": "DATABASE_URL=$DIRECT_URL prisma migrate deploy",
+  "start": "next start",
+  "lint": "next lint",
+  "seed": "node prisma/seed.js",
+  "start:db": "docker-compose up -d",
+  "stop:db": "docker-compose down",
+  "start:app": "npm run start:db && npm run build && npm run start",
+  "postinstall": "prisma generate"
+},
   "dependencies": {
+    "@prisma/client": "^6.16.1",
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.2",
+    "next": "15.5.0",
+    "next-auth": "^4.24.11",
+    "prisma": "^6.14.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "next": "15.5.0"
+    "react-hook-form": "^7.62.0",
+    "react-select": "^5.10.2",
+    "react-toastify": "^11.0.5"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/line-clamp": "^0.4.4",
+    "@tailwindcss/postcss": "^4",
+    "@types/bcrypt": "^6.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "15.5.0",
-    "@eslint/eslintrc": "^3"
+    "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.2"
   }
 }
