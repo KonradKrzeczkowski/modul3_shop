@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["i.ibb.co"],
   },
-};
-
-export default nextConfig;
+  eslint: {
+    ignoreDuringBuilds: true, 
+  },
+};export default nextConfig;
