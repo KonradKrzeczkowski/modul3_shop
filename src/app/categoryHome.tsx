@@ -39,7 +39,7 @@ const CategoryHome = () => {
       <h1 className="text-[28px]  text-[var(--color-neutral-900)] mb-8">
         Category
       </h1>
-      <div className="flex  flex-col md:gap-0 gap-4 md:justify-between items-center">
+      <div className="flex  flex-col md:flex-row md:gap-0 gap-4 md:justify-between items-center">
         {cards.map((card) => (
           <Link href={card.url} key={card.id}>
             <CategoryCard imageSrc={card.image} name={card.name} />

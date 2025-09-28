@@ -22,7 +22,7 @@ export default function RecommendationListClient() {
   // Fetch rekomendowanych produktów
   const fetchRecommendedProducts = async () => {
     try {
-      const res = await fetch("/api/products/recommended");
+      const res = await fetch("/api/recomendation");
       if (!res.ok) throw new Error("Nie udało się pobrać produktów");
       const data: Product[] = await res.json();
       setRecommendedProducts(data);
