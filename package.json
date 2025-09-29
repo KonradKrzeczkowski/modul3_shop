@@ -2,17 +2,13 @@
   "name": "shop",
   "version": "0.1.0",
   "private": true,
- "scripts": {
+"scripts": {
   "dev": "next dev --turbopack",
   "build": "prisma generate && next build",
   "migrate": "prisma migrate deploy",
-  "seed": "cross-env DATABASE_URL=$DIRECT_URL node prisma/seed.js",
+  "seed": "node prisma/seed.js",
   "start": "next start",
-  "lint": "next lint",
-  "start:db": "docker-compose up -d",
-  "stop:db": "docker-compose down",
-  "start:app": "npm run start:db && npm run build && npm run start",
-  "postinstall": "prisma generate && npm run migrate && npm run seed"
+  "postinstall": "prisma generate"
 },
   "dependencies": {
     "@prisma/client": "^6.16.1",
