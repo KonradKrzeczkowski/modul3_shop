@@ -5,7 +5,7 @@
  "scripts": {
   "dev": "next dev --turbopack",
   "build": "prisma generate && next build",
-  "migrate": "cross-env DATABASE_URL=$DIRECT_URL prisma migrate deploy",
+  "migrate": "prisma migrate deploy",
   "seed": "cross-env DATABASE_URL=$DIRECT_URL node prisma/seed.js",
   "start": "next start",
   "lint": "next lint",
