@@ -18,7 +18,7 @@ export default function CategoryCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const router = useRouter();
   useEffect(() => {
-    fetch("http://localhost:3000/api/category")
+    fetch("/api/category")
       .then((res) => res.json())
       .then((data) => setCategories(data))
       .catch((err) => console.error("Error fetching categories:", err));
