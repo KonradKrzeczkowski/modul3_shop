@@ -1,3 +1,4 @@
+import NexusHub from "@/components/icons/nexusHub";
 import Image from "next/image";
 
 export default function Footer() {
@@ -6,14 +7,7 @@ export default function Footer() {
       <div className="max-w-[1440px] mx-auto flex flex-col lg:flex-row justify-between gap-16">
        
        <div className="lg:w-[531.75px] flex flex-col items-start">
-
-  <Image
-    src="/home/nexushub.svg"
-    alt="NexusHub Logo"
-    width={200}       
-    height={46}      
-    className="object-contain"
-  />
+<NexusHub/>
 
 
   <p className="mt-[32px] text-[var(--color-heading)] text-sm">

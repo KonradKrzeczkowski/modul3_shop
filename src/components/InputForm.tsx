@@ -24,7 +24,7 @@ export const InputForm   = ({
       <input
         type={type}
         placeholder={placeholder}
-        className={`w-full border border-gray-400 rounded p-2 text-base pl-5 mb-1 ${
+        className={`w-full border border-gray-400 text-neutral-900 rounded p-2 text-base pl-5 mb-1 ${
           error ? "border-red-500" : "border-gray-400"
         }`}
         {...register}

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import Image from "next/image";
 import Link from "next/link";
+import NexusHub from "@/components/icons/nexusHub";
 export default function Login() {
   const [step, setStep] = useState<1 | 2>(1);
   const [emailOrPhone, setEmailOrPhone] = useState("");
@@ -38,7 +38,7 @@ export default function Login() {
   return (
     <div className="md:w-[448px] mx-auto ">
       <div className="flex justify-center mb-8">
-        <Image src="/home/nexushub.svg" alt="Logo" width={199} height={50} />
+       <NexusHub/>
       </div>
       <div className="border rounded-[6px] p-6 border-gray-200 bg-base mb-20">
         {step === 1 && (
@@ -102,13 +102,13 @@ export default function Login() {
                 />
                 <span className="text-base font-normal">Save password</span>
               </label>
-              <button className="text-orange-500 text-base font-normal">
+              <button className="text-primary-500 text-base font-normal">
                 Forgot your password?
               </button>
             </div>
             {error && <p className="text-red-500 mb-2">{error}</p>}
             <button
-              className="w-full bg-blue-600 text-white py-3 rounded text-base font-medium"
+              className="w-full bg-primary-500 text-white py-3 rounded text-base font-medium"
               onClick={handleStep2Submit}
             >
               Sign in

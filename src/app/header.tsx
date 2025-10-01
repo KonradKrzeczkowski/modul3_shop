@@ -1,37 +1,23 @@
-"use client"
-import Image from "next/image";
+"use client";
 import Link from "next/link";
-
+import Account from "@/components/icons/account";
+import NexusHub from "@/components/icons/nexusHub";
+import Cart from "@/components/icons/cart";
 export default function Header() {
-  
   return (
     <header className="md:px-[40px] px-2 pt-[32px] pb-0 bg-[var(--color-bg)]">
       <div className="flex items-center justify-between">
         <div className="flex-shrink-0">
-          <Image
-            src="/home/nexushub.svg"
-            alt="NexusHub Logo"
-            width={200}
-            height={46}
-            className="object-contain"
-          />
+        <NexusHub/>
         </div>
 
-        <div className="md:flex items-center gap-4" >
-          <Link href="/cart/me"><Image
-            src="/Cart/cart/shape-1.svg"
-            alt="Cart"
-            width={32}
-            height={32}
-            className="object-contain cursor-pointer"
-          /></Link>
-         <Link href="/profile"> <Image
-            src="/home/Account.svg"
-            alt="User Avatar"
-            width={32}
-            height={32}
-            className="object-contain cursor-pointer rounded-full"
-          /></Link>
+        <div className="md:flex items-center gap-4">
+          <Link href="/cart/me">
+            <Cart/>
+          </Link>
+          <Link href="/profile">
+          <Account/>
+          </Link>
         </div>
       </div>
 
@@ -49,7 +35,7 @@ export default function Header() {
           Product
         </Link>
       </nav>
-   
+
       <div className="mt-[40px] border-t border-[var(--color-gray-200)]"></div>
 
       <div className="mt-[32px]"></div>

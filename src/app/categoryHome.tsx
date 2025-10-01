@@ -39,13 +39,17 @@ const CategoryHome = () => {
       <h1 className="text-[28px]  text-[var(--color-neutral-900)] mb-8">
         Category
       </h1>
-      <div className="flex  flex-col md:flex-row md:gap-0 gap-4 md:justify-between items-center">
-        {cards.map((card) => (
-          <Link href={card.url} key={card.id}>
-            <CategoryCard imageSrc={card.image} name={card.name} />
-          </Link>
-        ))}
-      </div>
+     <div
+  className="flex gap-6 overflow-x-auto pb-4 scroll-smooth hide-scrollbar w-full px-4 justify-between"
+>
+  {cards.map((card) => (
+    <div key={card.id} className="flex-shrink-0 justify-content">
+      <Link href={card.url}>
+        <CategoryCard imageSrc={card.image} name={card.name} />
+      </Link>
+    </div>
+  ))}
+</div>
     </div>
   );
 };

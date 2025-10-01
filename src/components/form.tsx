@@ -1,10 +1,10 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import Image from "next/image";
 import { useState } from "react";
 import SuccessfullyRegister from "./successfullyRegister";
 import { InputForm } from "./InputForm";
+import NexusHub from "./icons/nexusHub";
 type FormData = {
   email: string;
   mobile: string;
@@ -81,7 +81,7 @@ export default function Form() {
     <div className="flex flex-col mx-auto md:w-[448px] mb-[77px] w-full w-max-[448px]">
       {" "}
       <div className=" flex justify-center mb-8 ">
-        <Image src="/home/nexushub.svg" alt="Logo" width={199} height={50} />
+       <NexusHub/>
       </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
