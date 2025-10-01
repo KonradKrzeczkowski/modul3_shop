@@ -5,13 +5,13 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-    output   = "./src/generated/prisma"
+  provider      = "prisma-client-js"
+  output        = "./src/generated/prisma"
+  binaryTargets = ["native"]
 }
-
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE")
+  url       = env("DATABASE_POSTGRES_URL")
   directUrl = env("DIRECT_URL")
 }
 
